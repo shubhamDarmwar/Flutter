@@ -4,12 +4,14 @@ import 'package:grocery_app/Screens/Dashboard/Dashboard.dart';
 
 class Login extends StatefulWidget {
   static const route = 'Login';
-  Login({Key key}) : super(key: key);
+  Login({Key key, bool isConsumer}) : super(key: key,);
   @override
   _LoginState createState() => _LoginState();
 }
 
 class _LoginState extends State<Login> {
+  final bool _isConsumer = true;
+  
   TextEditingController _usernameController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
 
@@ -18,6 +20,7 @@ class _LoginState extends State<Login> {
 
   bool _isValidUsername = true;
   bool _isValidPassword = true;
+
 
   @override
   Widget build(BuildContext context) {
@@ -158,6 +161,8 @@ class _LoginState extends State<Login> {
   }
 
   _doLogin(BuildContext context) {
+    print('isConsuemr');
+    print(_isConsumer);
     final username = _usernameController.text.trim();
     final password = _passwordController.text.trim();
     if (username == "") {

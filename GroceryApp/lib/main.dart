@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:grocery_app/CommonInterface/UserTypeSelectionScreen.dart';
 import 'Screens/CreateAccount/CreateAccount.dart';
 import 'Screens/CreateAccount/NewAccount.dart';
 import 'Screens/Dashboard/Dashboard.dart';
@@ -21,13 +22,14 @@ class MyApp extends StatelessWidget {
         //   isDense: true,
         // )
       ),
-      initialRoute: Login.route,
+      initialRoute: UserTypeSelectionScreen.route,
       routes: {
         Profile.route: (context) => Profile(),
         Login.route: (context) => Login(),
         Dashboard.route: (context) => Dashboard(),
         NewAccount.route: (context) => NewAccount(),
         CreateAccount.route: (context) => CreateAccount(),
+        UserTypeSelectionScreen.route: (context) => UserTypeSelectionScreen()
       },
     );
   }
