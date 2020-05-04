@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:grocery_app/Screens/Dashboard/Home.dart';
+import 'package:grocery_app/Screens/Favourites/favourite.dart';
+import 'package:grocery_app/Screens/More/More.dart';
+import 'package:grocery_app/Screens/MyCart/MyCart.dart';
 import 'package:grocery_app/Screens/Profile/Profile.dart';
-import 'package:grocery_app/Screens/login/Login.dart';
 
 class Dashboard extends StatefulWidget {
   static const route = 'Dashboard';
@@ -9,174 +12,77 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  int _currentIndex = 0;
+  final List<Widget> _pages = [
+    Home(),
+    MyCart(),
+    Favourites(),
+    Profile(),
+    More()
+  ];
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Dashboard'),
-        centerTitle: true,
-      ),
-      drawer: _getMenuDrawer(),
-      body: _createCardList(),
+    return WillPopScope(
+        child: Scaffold(
+          body: _pages[_currentIndex],
+          bottomNavigationBar: _getBottomNavigationBar(),
+        ),
+        onWillPop: () async {
+          if (_currentIndex == 0) {
+            return true;
+          } else {
+            setState(() {
+              _currentIndex = 0;
+            });
+            return false;
+          }
+        });
+  }
+
+  Widget _getBottomNavigationBar() {
+    return BottomNavigationBar(
+      type: BottomNavigationBarType.fixed,
+      items: _getItems(),
+      currentIndex: _currentIndex,
+      onTap: (index) => _changeTab(index),
     );
   }
 
-  Widget _createCardList() {
-    return Container(
-      child: Column(
-        children: <Widget>[
-          Expanded(
-              child: ListView.builder(
-                  itemCount: 10,
-                  itemBuilder: (context, index) {
-                    return _getCardRow();
-                  }))
-        ],
-      ),
-    );
+  _changeTab(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
   }
 
-  Widget _getCardRow() {
-    return Container(
-      padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-      height: 100,
-      width: double.maxFinite,
-      child: Card(
-        elevation: 3,
-        child: InkWell(
-          onTap: () {
-            print('Card Row tapped');
-          },
-          child: Container(
-            padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Icon(
-                  Icons.add_shopping_cart,
-                  color: Colors.redAccent,
-                  size: 30,
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      'Fruits and Vegetables',
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16.0),
-                    ),
-                    Text(
-                      'Potato,Tomato, Apple',
-                      style: TextStyle(
-                          color: Colors.black87,
-                          fontWeight: FontWeight.w300,
-                          fontSize: 13.0),
-                    )
-                  ],
-                ),
-              ],
-            ),
-          ),
+//store  my cart favourites profile more
+  List<BottomNavigationBarItem> _getItems() {
+    List<BottomNavigationBarItem> items = List();
+    return items
+      ..add(_getBottomNavigationItem(icon: Icons.store, title: 'Store'))
+      ..add(
+          _getBottomNavigationItem(icon: Icons.shopping_cart, title: 'My Cart'))
+      ..add(_getBottomNavigationItem(icon: Icons.favorite, title: 'Favourites'))
+      ..add(_getBottomNavigationItem(
+          icon: Icons.person_outline, title: 'Profile'))
+      ..add(_getBottomNavigationItem(icon: Icons.more_horiz, title: 'More'));
+  }
+
+  BottomNavigationBarItem _getBottomNavigationItem(
+      {@required IconData icon, @required String title}) {
+    return BottomNavigationBarItem(
+      backgroundColor: Colors.grey,
+      icon: Icon(
+        icon,
+        size: 24.0,
+      ),
+      title: Text(
+        title,
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 12.0,
         ),
       ),
     );
-  }
-
-  Widget _getMenuDrawer() {
-    return Drawer(
-        child: ListView(
-      padding: EdgeInsets.zero,
-      children: <Widget>[
-        DrawerHeader(
-          child: Container(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                  height: 100.0,
-                  width: 100.0,
-                  margin: EdgeInsets.only(left: 0.0, right: 16.0, top: 8.0),
-                  child: Icon(
-                    Icons.person,
-                    size: 100.0,
-                    color: Colors.black38,
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(left: 0.0, right: 0.0, top: 8.0),
-                  child: _getUserProfileDetails(),
-                )
-              ],
-            ),
-          ),
-          decoration: BoxDecoration(
-            color: Colors.grey,
-          ),
-        ),
-        ListTile(
-          title: Text('My profile'),
-          onTap: () { 
-            Navigator.of(context).pushNamedAndRemoveUntil(
-                  Profile.route, (Route<dynamic> route) => false);
-          }),
-        ListTile(
-          title: Text('Menu 2'),
-          onTap: () => Navigator.pop(context),
-        ),
-        ListTile(
-          title: Text('Menu 3'),
-          onTap: () => Navigator.pop(context),
-        ),
-        ListTile(
-          title: Text('Menu 4'),
-          onTap: () => Navigator.pop(context),
-        ),
-        ListTile(
-          title: Text('Menu 5'),
-          onTap: () => Navigator.pop(context),
-        ),
-        ListTile(
-          title: Text('Menu 6'),
-          onTap: () => Navigator.pop(context),
-        ),
-        ListTile(
-            title: Text('Log Out'),
-            onTap: () {
-              Navigator.of(context).pushNamedAndRemoveUntil(
-                  Login.route, (Route<dynamic> route) => false);
-            }),
-      ],
-    ));
-  }
-
-  _getUserProfileDetails() {
-    return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'User Name',
-            style: TextStyle(
-                color: Colors.white70,
-                fontSize: 20.0,
-                fontWeight: FontWeight.w500),
-          ),
-          SizedBox(
-            height: 4,
-          ),
-          Text(
-            'Developer',
-            style: TextStyle(
-                color: Colors.white70,
-                fontSize: 14.0,
-                fontWeight: FontWeight.w500),
-          )
-        ]);
   }
 }
